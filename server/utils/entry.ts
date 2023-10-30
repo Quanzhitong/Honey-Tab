@@ -4,6 +4,7 @@ import { __DEV__, HOST, HRM_PATH, PORT } from './constants';
 import { resolveServer, resolveSrc } from './path';
 
 const HMR_URL = encodeURIComponent(`http://${HOST}:${PORT}${HRM_PATH}`);
+console.info(`当前HMR_URL 为 ${decodeURIComponent(HMR_URL)} `);
 // !: 必须指定 path 为 devServer 的地址，不然的话热更新 client 会向 chrome://xxx 请求
 const HMRClientScript = `webpack-hot-middleware/client?path=${HMR_URL}&reload=true&overlay=true`;
 

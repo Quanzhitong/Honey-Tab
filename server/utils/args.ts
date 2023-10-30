@@ -1,3 +1,4 @@
+// 解析参数
 import yargs = require('yargs/yargs');
 
 interface Arguments {

@@ -38,7 +38,8 @@ async function start() {
         const coloredAddress = chalk.magenta.underline(`http://${HOST}:${PORT}`);
         console.info(`DevServer is running at ${coloredAddress} ✔`);
     });
-
+    
+    // 当进程退出时运行一些代码
     exitHook(() => {
         // 先关闭 devServer
         httpServer.close();
