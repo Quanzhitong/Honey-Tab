@@ -48,6 +48,15 @@ const manifest: Manifest.WebExtensionManifest = {
         '48': 'icons/extension-icon-x48.png',
         '128': 'icons/extension-icon-x128.png',
     },
+    commands: {
+        "merge-windows": {
+          "suggested_key": {
+            windows: "Ctrl+Shift+Right",
+            mac: "Command+Shift+Right"
+          },
+          description: "合并多个窗口"
+        },
+      },
 };
 if (!__DEV__) {
     manifest.content_scripts?.unshift({

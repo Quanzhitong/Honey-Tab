@@ -8,6 +8,7 @@ export function pathExists(path: string) {
         .catch(() => false);
 }
 
+// 确保目录存在
 export async function ensureDir(dir: string) {
     if (!(await pathExists(dir))) {
         await fs.mkdir(dir, { recursive: true });

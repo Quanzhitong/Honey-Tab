@@ -45,6 +45,7 @@
         ]
     },
     "dependencies": {
+        "@ant-design/icons": "5.2.6",
         "antd": "5.0.1",
         "dayjs": "1.11.6",
         "jquery": "3.6.1",
