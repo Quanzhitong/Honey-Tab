@@ -1,9 +1,9 @@
 {
-    "name": "awesome-chrome-extension-boilerplate",
-    "displayName": "awesome chrome extension boilerplate",
+    "name": "hades-tool",
+    "displayName": "Hades Tool",
     "version": "1.0.0",
     "browserslist": "Chrome >= 96",
-    "description": "made by awesome-chrome-extension-boilerplate",
+    "description": "一个管理窗口、tab 标签页的小工具",
     "private": true,
     "author": "YuTengjing",
     "license": "MIT",

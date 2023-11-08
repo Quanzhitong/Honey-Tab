@@ -24,7 +24,6 @@ onMessage('mergeWin', (msg) => {
 });
 
 const mergeWinCommand = async (cmd: string) => {
-    console.log(cmd, '==cmd');
     if(cmd === 'merge-windows') {
         const targetWin = await chrome.windows.getCurrent();
         chrome.windows.getAll({"populate" : true}, (win) => moveTabs(win, targetWin));
@@ -32,3 +31,17 @@ const mergeWinCommand = async (cmd: string) => {
 }
 
 chrome.commands.onCommand.addListener(mergeWinCommand);
+
+// onInstalled 事件，该事件在首次安装扩展程序（而不是 Service Worker）、扩展程序更新到新版本以及 Chrome 更新到新版本时触发
+// chrome.runtime.onInstalled.addListener((details) => {
+//     if(details.reason !== "install" && details.reason !== "update") return;
+//     chrome.contextMenus.create({
+//       "id": "sampleContextMenu",
+//       "title": "Sample Context Menu",
+//       "contexts": ["selection"]
+//     });
+//   });
+
+chrome.tabs.query({currentWindow: true}).then((tabs) => {
+    console.log(tabs, '==tabs=In-server=');
+});
