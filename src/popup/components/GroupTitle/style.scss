@@ -1,4 +1,8 @@
-.groupTitle {
+.group-title {
     padding: 0 8px;
+    max-width: 400px;
     border-radius: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

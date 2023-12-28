@@ -1,5 +1,17 @@
-.tabTitle {
-    max-width: 385px;
+.tab-title {
+    max-width: 360px;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.right-operator {
+    padding-right: 5px;
+    position: absolute;
+    right: 0;
+    overflow: hidden;
+}
+
+div.tab-title:hover .right-operator {
+    overflow: auto;
 }
