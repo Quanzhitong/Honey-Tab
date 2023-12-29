@@ -55,12 +55,11 @@ const App = () => {
         const dragKey = info.dragNode.key;
         const dropPos = info.node.pos.split('-');
         const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
+        // 组不允许拖动
         if (dragNode.children && dragNode.children.length > 0) {
             return;
         }
-        if (dropPos.length === 2) {
-            return;
-        }
+
         const loop = (
             data: DataNode[],
             key: React.Key,
@@ -117,15 +116,20 @@ const App = () => {
             .filter((tab) => tab.groupId === dragNode.groupId)
             .map((tab) => tab.id);
         const preTabIds = resetTabIds.filter((f) => f !== dragNode.tabId) as number[];
-        const insertIndex = currentTabs.findIndex((tab) => tab.id === info.node.tabId);
+        const targetNodeIsGroup = info.node.children && info.node.children.length > 0;
+        // info.node.children[1] 是未移动之前的组里第一个元素
+        const targetNodeId = targetNodeIsGroup ? info.node.children[1].tabId : info.node.tabId;
+        const insertIndex = currentTabs.findIndex((tab) => tab.id === targetNodeId);
         await (info.node.groupId === EMPTY_GROUP_ID
             ? chrome.tabs.ungroup(dragNode.tabId)
             : chrome.tabs.group({ groupId: info.node.groupId, tabIds: dragNode.tabId }));
-        await chrome.tabs.move(dragNode.tabId, { index: insertIndex + 1 });
+        await chrome.tabs.move(dragNode.tabId, {
+            index: targetNodeIsGroup ? insertIndex : insertIndex + 1,
+        });
         if (preTabIds.length > 0) {
             await chrome.tabs.group({
                 groupId: dragNode.groupId,
-                tabIds: resetTabIds.filter((f) => f !== dragNode.tabId) as number[],
+                tabIds: preTabIds,
             });
         }
         setVersion((v) => v + 1);
@@ -198,9 +202,10 @@ const App = () => {
         const targetWin = await chrome.windows.getCurrent();
         const currentGroups = await chrome.tabGroups.query({ windowId: targetWin.id });
         const groupList = currentGroups.map((g) => {
+            const _children = currentTabs.filter((t) => t.groupId === g.id);
             return {
                 ...g,
-                children: currentTabs.filter((t) => t.groupId === g.id),
+                children: _children,
             };
         });
         const relativeIds = new Set(currentGroups.map((x) => x.id));

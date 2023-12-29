@@ -5,13 +5,5 @@ module.exports = {
     rules: {
         'import/default': OFF,
         '@typescript-eslint/consistent-type-imports': 'error',
-        // 'import/order': [
-        //     'error',
-        //     {
-        //         groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
-        //         'newlines-between': 'never',
-        //         pathGroupsExcludedImportTypes: ['type'],
-        //     },
-        // ],
     },
 };
