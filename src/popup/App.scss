@@ -4,8 +4,13 @@
     padding: 8px 12px;
     width: 480px;
     min-height: 240px;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
     .title {
         text-align: center;
     }
+}
+
+.tab-title {
+    font-weight: 600;
 }

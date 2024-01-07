@@ -2,6 +2,7 @@ import { Button, Tabs, Tree } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import { useEffect, useMemo, useState } from 'react';
 
+import { ConfigManage } from './components/ConfigManage';
 import GroupTitle from './components/GroupTitle';
 import MyTooltip from './components/MyTooltip';
 import TabTitle from './components/TabTitle';
@@ -59,7 +60,6 @@ const App = () => {
         if (dragNode.children && dragNode.children.length > 0) {
             return;
         }
-
         const loop = (
             data: DataNode[],
             key: React.Key,
@@ -75,14 +75,12 @@ const App = () => {
             }
         };
         const data = [...tabList];
-
         // Find dragObject
         let dragObj: DataNode;
         loop(data, dragKey, (item, index, arr) => {
             arr.splice(index, 1);
             dragObj = item;
         });
-
         if (!info.dropToGap) {
             // Drop on the content
             loop(data, dropKey, (item) => {
@@ -117,7 +115,7 @@ const App = () => {
             .map((tab) => tab.id);
         const preTabIds = resetTabIds.filter((f) => f !== dragNode.tabId) as number[];
         const targetNodeIsGroup = info.node.children && info.node.children.length > 0;
-        // info.node.children[1] 是未移动之前的组里第一个元素
+        // info.node.children[1] 是未移动之前的第一个元素
         const targetNodeId = targetNodeIsGroup ? info.node.children[1].tabId : info.node.tabId;
         const insertIndex = currentTabs.findIndex((tab) => tab.id === targetNodeId);
         await (info.node.groupId === EMPTY_GROUP_ID
@@ -140,7 +138,7 @@ const App = () => {
             {
                 key: 'tab列表',
                 label: (
-                    <span>
+                    <span className="tab-title">
                         tab列表{' '}
                         <MyTooltip
                             title={'插件打开时会自动整理tab标签页顺序，未分组的排在最右边'}
@@ -163,39 +161,41 @@ const App = () => {
             },
             {
                 key: '配置管理',
-                label: '配置管理',
-                children: 'Content of Tab Pane 2',
+                label: <span className="tab-title">配置管理</span>,
+                children: <ConfigManage />,
             },
         ];
     }, [tabList]);
 
-    const buildTreeData = (data: TabDataType[]) => {
-        return data.map((r) => {
-            const children = r.children.map((c, index) => {
+    const buildTreeData = useMemo(() => {
+        return (data: TabDataType[]) => {
+            return data.map((r) => {
+                const children = r.children.map((c, index) => {
+                    return {
+                        icon: (
+                            <img
+                                alt=""
+                                width={14}
+                                height={14}
+                                style={{ position: 'relative', top: '2px' }}
+                                src={c.favIconUrl}
+                            />
+                        ),
+                        title: <TabTitle title={c.title} tabId={c.id} callBack={setVersion} />,
+                        key: `${c.windowId + r.id + index}${c.id}`,
+                        tabId: c.id,
+                        groupId: r.id,
+                    };
+                });
                 return {
-                    icon: (
-                        <img
-                            alt=""
-                            width={14}
-                            height={14}
-                            style={{ position: 'relative', top: '2px' }}
-                            src={c.favIconUrl}
-                        />
-                    ),
-                    title: <TabTitle title={c.title} tabId={c.id} callBack={setVersion} />,
-                    key: `${c.windowId + r.id + index}${c.id}`,
-                    tabId: c.id,
+                    title: <GroupTitle data={r} />,
+                    key: `${r.id + r.windowId}`,
+                    children,
                     groupId: r.id,
                 };
             });
-            return {
-                title: <GroupTitle data={r} />,
-                key: `${r.id + r.windowId}`,
-                children,
-                groupId: r.id,
-            };
-        });
-    };
+        };
+    }, []);
 
     const buildTabList = async () => {
         const currentTabs = await chrome.tabs.query({ currentWindow: true });
