@@ -49,14 +49,28 @@ const manifest: Manifest.WebExtensionManifest = {
         '128': 'icons/extension-icon-x128.png',
     },
     commands: {
-        "merge-windows": {
-          "suggested_key": {
-            windows: "Ctrl+Shift+Right",
-            mac: "Command+Shift+Right"
-          },
-          description: "合并多个窗口"
+        'merge-windows': {
+            suggested_key: {
+                windows: 'Ctrl+Shift+Right',
+                mac: 'Command+Shift+Right',
+            },
+            description: '合并多个窗口',
         },
-      },
+        'create-group': {
+            suggested_key: {
+                windows: 'Ctrl+Shift+Up',
+                mac: 'Command+Shift+Up',
+            },
+            description: '根据配置创建分组',
+        },
+        'un-group': {
+            suggested_key: {
+                windows: 'Ctrl+Shift+Down',
+                mac: 'Command+Shift+Down',
+            },
+            description: '解散所有分组',
+        },
+    },
 };
 if (!__DEV__) {
     manifest.content_scripts?.unshift({

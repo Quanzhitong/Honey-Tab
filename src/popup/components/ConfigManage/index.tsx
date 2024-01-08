@@ -1,4 +1,4 @@
-import { Button, InputNumber, Select, Switch } from 'antd';
+import { Button, InputNumber, message, Select, Switch } from 'antd';
 import { useState } from 'react';
 import { sendMessage } from 'webext-bridge';
 
@@ -92,7 +92,6 @@ export function ConfigManage() {
             await sendMessage('domain-config', { ...domainConfig }, 'background');
             return;
         }
-        console.log(showConfig, typeof showConfig, '==showConfig');
         const currentTabs = await chrome.tabs.query({ currentWindow: true });
         const unGroupIds = currentTabs
             .filter((t) => t.groupId !== -1)
@@ -104,6 +103,8 @@ export function ConfigManage() {
             });
         if (unGroupIds.length > 0) {
             chrome.tabs.ungroup(unGroupIds);
+        } else {
+            message.error('没有需要取消分组的标签页');
         }
     };
     return (
@@ -177,9 +178,6 @@ export function ConfigManage() {
                         </div>
                     ) : null}
                 </div>
-            </div>
-            <div className="hot-keys">
-                <h4>快捷键：</h4>
             </div>
         </div>
     );

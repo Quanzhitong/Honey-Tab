@@ -141,6 +141,7 @@ const App = () => {
                     <span className="tab-title">
                         tab列表{' '}
                         <MyTooltip
+                            placement="bottomLeft"
                             title={'插件打开时会自动整理tab标签页顺序，未分组的排在最右边'}
                         />
                     </span>

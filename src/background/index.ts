@@ -1,5 +1,7 @@
 import { onMessage } from 'webext-bridge';
 
+import type { DomainConfigType } from '@/popup/components/ConfigManage/type';
+
 import type { tabsDataType } from './type';
 
 // todo 合并公共方法
@@ -39,7 +41,6 @@ function groupBy<T, K>(array: T[], callback: ((e: T, i: number) => K) | keyof T)
         } else {
             value.push(e);
         }
-
         return newMap;
     }, new Map<K, T[]>());
 }
@@ -90,7 +91,6 @@ async function createGroupTabs(selectedRange: string, matchLevel: number, leastN
     // 划定分组范围
     const targetTabs =
         selectedRange === 'all' ? currentTabs : currentTabs.filter((t) => t.groupId === -1);
-    console.log(targetTabs, '==targetTabs');
     // 准备数据
     const tabsData: tabsDataType[] = targetTabs.map((t) => {
         return {
@@ -107,24 +107,20 @@ async function createGroupTabs(selectedRange: string, matchLevel: number, leastN
     return filterTabsByLeastNumber(groupByDomainLevel, leastNumber);
 }
 
-const mergeWinCommand = async (cmd: string) => {
-    if (cmd === 'merge-windows') {
-        const targetWin = await chrome.windows.getCurrent();
-        chrome.windows.getAll({ populate: true }, (win) => moveTabs(win, targetWin));
-    }
+let domainConfigMsg: DomainConfigType = {
+    open: false,
+    selectedRange: 'all',
+    leastNumber: 2,
+    matchLevel: 3,
+    openAllGroup: false,
 };
 
-chrome.commands.onCommand.addListener(mergeWinCommand);
-
-onMessage('domain-config', async (msg) => {
-    const { data } = msg ?? {};
-    const { open, selectedRange, leastNumber, matchLevel, openAllGroup } = JSON.parse(
-        JSON.stringify(data),
-    );
-    if (!open) {
-        return;
-    }
-    const groupTabs = await createGroupTabs(selectedRange, matchLevel, leastNumber);
+function updateGroupTabs(
+    groupTabs: {
+        [x: string]: [unknown, tabsDataType[]][];
+    }[],
+    openAllGroup: boolean,
+) {
     groupTabs.forEach((item) => {
         const windowId = Number(Object.keys(item)[0]);
         const tabsWithDomain = item[Object.keys(item)[0]] as [string, tabsDataType[]][];
@@ -135,23 +131,53 @@ onMessage('domain-config', async (msg) => {
             });
         });
     });
+}
+onMessage('domain-config', async (msg) => {
+    const { data } = msg ?? {};
+    const objData = JSON.parse(JSON.stringify(data));
+    domainConfigMsg = objData;
+    const { open, selectedRange, leastNumber, matchLevel, openAllGroup } = objData;
+    if (!open) {
+        return;
+    }
+    const groupTabs = await createGroupTabs(selectedRange, matchLevel, leastNumber);
+    updateGroupTabs(groupTabs, openAllGroup);
 });
+
+const shortcutCommand = async (cmd: string) => {
+    if (cmd === 'merge-windows') {
+        const targetWin = await chrome.windows.getCurrent();
+        chrome.windows.getAll({ populate: true }, (win) => moveTabs(win, targetWin));
+    }
+    if (cmd === 'create-group') {
+        const { selectedRange, leastNumber, matchLevel, openAllGroup } = domainConfigMsg;
+        const groupTabs = await createGroupTabs(selectedRange, matchLevel, leastNumber);
+        updateGroupTabs(groupTabs, openAllGroup);
+        return;
+    }
+    if (cmd === 'un-group') {
+        const currentTabs = await chrome.tabs.query({});
+        const unGroupIds = currentTabs
+            .filter((t) => t.groupId !== -1)
+            .map((t) => {
+                if (t.id) {
+                    return t.id;
+                }
+                return -1;
+            });
+        if (unGroupIds.length > 0) {
+            chrome.tabs.ungroup(unGroupIds);
+        }
+    }
+};
+
+chrome.commands.onCommand.addListener(shortcutCommand);
 
 // onInstalled 事件，该事件在首次安装扩展程序（而不是 Service Worker）、扩展程序更新到新版本以及 Chrome 更新到新版本时触发
 chrome.runtime.onInstalled.addListener(() => {
     // if(details.reason !== "install" && details.reason !== "update") {
     //      return null;
     // }
-    // 可能没生效，但是没关系
-    localStorage.setItem(
-        'domain_config',
-        JSON.stringify({
-            open: false,
-            selectedRange: 'all',
-            leastNumber: 2,
-            matchLevel: 3,
-        }),
-    );
     // chrome.contextMenus.create({
     //   "id": "sampleContextMenu",
     //   "title": "Sample Context Menu",
