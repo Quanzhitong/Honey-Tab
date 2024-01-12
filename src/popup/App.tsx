@@ -1,6 +1,6 @@
 import { Button, Tabs, Tree } from 'antd';
-import type { DataNode } from 'antd/es/tree';
 import { useEffect, useMemo, useState } from 'react';
+import { onMessage } from 'webext-bridge';
 
 import { ConfigManage } from './components/ConfigManage';
 import GroupTitle from './components/GroupTitle';
@@ -11,6 +11,17 @@ import type { TabDataType, TabListType } from './type';
 import './App.scss';
 
 const EMPTY_GROUP_ID = -100;
+
+const initData = {
+    title: '',
+    key: '',
+    children: [
+        {
+            title: '',
+            key: '1000',
+        },
+    ],
+};
 
 async function moveTabs(w: chrome.windows.Window[], targetWin: chrome.windows.Window) {
     const numWindows = w.length;
@@ -31,98 +42,71 @@ async function moveTabs(w: chrome.windows.Window[], targetWin: chrome.windows.Wi
     }
 }
 
-const initData = {
-    title: '',
-    key: '',
-    children: [
-        {
-            title: '',
-            key: '1000',
-        },
-    ],
-};
-
-const mergeWinHandle = async () => {
+async function mergeWinHandle() {
     const targetWin = await chrome.windows.getCurrent();
     chrome.windows.getAll({ populate: true }, (win) => moveTabs(win, targetWin));
+}
+
+const fetchCurrentTabs = async () => {
+    const currentTabs = await chrome.tabs.query({ currentWindow: true });
+    const unGroupTabs = currentTabs.filter((tab) => tab.groupId === -1);
+    if (unGroupTabs.length > 0) {
+        await chrome.tabs.move(unGroupTabs.map((tab) => tab.id) as number[], { index: -1 });
+    }
+    return currentTabs;
+};
+
+const MergeWindowBtn = () => {
+    return (
+        <>
+            <MyTooltip
+                title={
+                    <>
+                        快捷键: <br />
+                        Command/Ctrl + Shift + 键盘右键
+                    </>
+                }
+            />
+            <Button id={'mm'} type="primary" size="small" onClick={mergeWinHandle}>
+                一键合并窗口
+            </Button>
+        </>
+    );
 };
 
 const App = () => {
     const [tabList, setTabList] = useState<TabListType[]>([initData]);
     const [version, setVersion] = useState(0);
     const onDropHandle = async (info: any) => {
-        const dropKey = info.node.key;
         const dragNode = info.dragNode;
-        const dragKey = info.dragNode.key;
-        const dropPos = info.node.pos.split('-');
-        const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
-        // 组不允许拖动
         if (dragNode.children && dragNode.children.length > 0) {
             return;
-        }
-        const loop = (
-            data: DataNode[],
-            key: React.Key,
-            callback: (node: DataNode, i: number, data: DataNode[]) => void,
-        ) => {
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].key === key) {
-                    return callback(data[i], i, data);
-                }
-                if (data[i].children) {
-                    loop(data[i].children!, key, callback);
-                }
-            }
-        };
-        const data = [...tabList];
-        // Find dragObject
-        let dragObj: DataNode;
-        loop(data, dragKey, (item, index, arr) => {
-            arr.splice(index, 1);
-            dragObj = item;
-        });
-        if (!info.dropToGap) {
-            // Drop on the content
-            loop(data, dropKey, (item) => {
-                item.children = item.children || [];
-                item.children.unshift(dragObj);
-            });
-        } else if (
-            ((info.node as any).props.children || []).length > 0 && // Has children
-            (info.node as any).props.expanded && // Is expanded
-            dropPosition === 1 // On the bottom gap
-        ) {
-            loop(data, dropKey, (item) => {
-                item.children = item.children || [];
-                item.children.unshift(dragObj);
-            });
-        } else {
-            let ar: DataNode[] = [];
-            let i: number;
-            loop(data, dropKey, (_item, index, arr) => {
-                ar = arr;
-                i = index;
-            });
-            if (dropPosition === -1) {
-                ar.splice(i!, 0, dragObj!);
-            } else {
-                ar.splice(i! + 1, 0, dragObj!);
-            }
         }
         const currentTabs = await chrome.tabs.query({ currentWindow: true });
         const resetTabIds = currentTabs
             .filter((tab) => tab.groupId === dragNode.groupId)
             .map((tab) => tab.id);
         const preTabIds = resetTabIds.filter((f) => f !== dragNode.tabId) as number[];
-        const targetNodeIsGroup = info.node.children && info.node.children.length > 0;
-        // info.node.children[1] 是未移动之前的第一个元素
-        const targetNodeId = targetNodeIsGroup ? info.node.children[1].tabId : info.node.tabId;
+        const targetNodeIsGroupIndex0 = info.node.children && info.node.children.length > 0;
+        // 拖动的目标位置，如果是在组的 index0 位置，那info.node是整个组。
+        // 拖动可能从上往下或者从下往上
+        const targetNodeId = targetNodeIsGroupIndex0
+            ? info.node.children[0].tabId
+            : info.node.tabId;
+        const dragNodeIndex = currentTabs.findIndex((tab) => tab.id === dragNode.tabId);
         const insertIndex = currentTabs.findIndex((tab) => tab.id === targetNodeId);
         await (info.node.groupId === EMPTY_GROUP_ID
             ? chrome.tabs.ungroup(dragNode.tabId)
             : chrome.tabs.group({ groupId: info.node.groupId, tabIds: dragNode.tabId }));
         await chrome.tabs.move(dragNode.tabId, {
-            index: targetNodeIsGroup ? insertIndex : insertIndex + 1,
+            index:
+                dragNodeIndex > insertIndex
+                    ? targetNodeIsGroupIndex0
+                        ? insertIndex
+                        : insertIndex + 1
+                    : targetNodeIsGroupIndex0
+                    ? insertIndex - 1
+                    : insertIndex,
         });
         if (preTabIds.length > 0) {
             await chrome.tabs.group({
@@ -131,7 +115,6 @@ const App = () => {
             });
         }
         setVersion((v) => v + 1);
-        setTabList(data);
     };
     const tabItems = useMemo(() => {
         return [
@@ -163,7 +146,7 @@ const App = () => {
             {
                 key: '配置管理',
                 label: <span className="tab-title">配置管理</span>,
-                children: <ConfigManage />,
+                children: <ConfigManage callBack={setVersion} />,
             },
         ];
     }, [tabList]);
@@ -228,40 +211,20 @@ const App = () => {
         setTabList(treeData);
     };
 
-    const mergeWindowBtn = useMemo(() => {
-        return (
-            <>
-                <MyTooltip
-                    title={
-                        <>
-                            快捷键: <br />
-                            Command/Ctrl + Shift + 键盘右键
-                        </>
-                    }
-                />
-                <Button id={'mm'} type="primary" size="small" onClick={mergeWinHandle}>
-                    一键合并窗口
-                </Button>
-            </>
-        );
+    useEffect(() => {
+        onMessage('trigger-update', () => {
+            setVersion((v) => v + 1);
+        });
     }, []);
 
     useEffect(() => {
-        const fetchCurrentTabs = async () => {
-            const currentTabs = await chrome.tabs.query({ currentWindow: true });
-            const unGroupTabs = currentTabs.filter((tab) => tab.groupId === -1);
-            if (unGroupTabs.length > 0) {
-                await chrome.tabs.move(unGroupTabs.map((tab) => tab.id) as number[], { index: -1 });
-            }
-            return currentTabs;
-        };
         fetchCurrentTabs();
         buildTabList();
     }, [version]);
 
     return (
         <div className="app">
-            <Tabs tabBarExtraContent={mergeWindowBtn} items={tabItems} />
+            <Tabs tabBarExtraContent={<MergeWindowBtn />} items={tabItems} />
         </div>
     );
 };

@@ -4,6 +4,7 @@ import { sendMessage } from 'webext-bridge';
 
 import type {
     ConfigKeyType,
+    ConfigManageProps,
     DomainConfigType,
     DomainLevelType,
     TabLeastNumberProps,
@@ -71,7 +72,8 @@ function getInitData() {
     return initData;
 }
 
-export function ConfigManage() {
+export function ConfigManage(props: ConfigManageProps) {
+    const { callBack } = props;
     const [domainConfig, setDomainConfig] = useState<DomainConfigType>(getInitData());
     const onChangeConfigItem = async (
         keyType: ConfigKeyType,
@@ -83,6 +85,7 @@ export function ConfigManage() {
             JSON.stringify({ ...domainConfig, [keyType]: value }),
         );
         await sendMessage('domain-config', { ...domainConfig, [keyType]: value }, 'background');
+        callBack((v) => v + 1);
     };
     const showConfig = localStorage.getItem('domain_config')
         ? JSON.parse(localStorage.getItem('domain_config') as string).open
@@ -90,6 +93,7 @@ export function ConfigManage() {
     const extraHandle = async () => {
         if (showConfig) {
             await sendMessage('domain-config', { ...domainConfig }, 'background');
+            callBack((v) => v + 1);
             return;
         }
         const currentTabs = await chrome.tabs.query({ currentWindow: true });
@@ -102,7 +106,8 @@ export function ConfigManage() {
                 return -1;
             });
         if (unGroupIds.length > 0) {
-            chrome.tabs.ungroup(unGroupIds);
+            await chrome.tabs.ungroup(unGroupIds);
+            callBack((v) => v + 1);
         } else {
             message.error('没有需要取消分组的标签页');
         }
@@ -171,10 +176,6 @@ export function ConfigManage() {
                                     className="switch"
                                 />
                             </div>
-                            {/* <div className='rule-item'>
-                            <div className='label'>排除域名：</div>
-                            <div className='item'>col-62</div>
-                        </div> */}
                         </div>
                     ) : null}
                 </div>

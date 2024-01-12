@@ -1,4 +1,4 @@
-import { onMessage } from 'webext-bridge';
+import { onMessage, sendMessage } from 'webext-bridge';
 
 import type { DomainConfigType } from '@/popup/components/ConfigManage/type';
 
@@ -132,6 +132,27 @@ function updateGroupTabs(
         });
     });
 }
+
+async function cancelGroups() {
+    const currentTabs = await chrome.tabs.query({});
+    const unGroupIds = currentTabs
+        .filter((t) => t.groupId !== -1)
+        .map((t) => {
+            if (t.id) {
+                return t.id;
+            }
+            return -1;
+        });
+    if (unGroupIds.length > 0) {
+        chrome.tabs.ungroup(unGroupIds);
+    }
+}
+
+async function getCurrentTab() {
+    const currentTabs = await chrome.tabs.query({});
+    return currentTabs.find((t) => t.active);
+}
+
 onMessage('domain-config', async (msg) => {
     const { data } = msg ?? {};
     const objData = JSON.parse(JSON.stringify(data));
@@ -141,6 +162,9 @@ onMessage('domain-config', async (msg) => {
         return;
     }
     const groupTabs = await createGroupTabs(selectedRange, matchLevel, leastNumber);
+    if (selectedRange === 'all') {
+        await cancelGroups();
+    }
     updateGroupTabs(groupTabs, openAllGroup);
 });
 
@@ -150,24 +174,36 @@ const shortcutCommand = async (cmd: string) => {
         chrome.windows.getAll({ populate: true }, (win) => moveTabs(win, targetWin));
     }
     if (cmd === 'create-group') {
-        const { selectedRange, leastNumber, matchLevel, openAllGroup } = domainConfigMsg;
+        const { open, selectedRange, leastNumber, matchLevel, openAllGroup } = domainConfigMsg;
+        if (!open) {
+            return;
+        }
         const groupTabs = await createGroupTabs(selectedRange, matchLevel, leastNumber);
+        const currentTab = await getCurrentTab();
+        if (currentTab && currentTab.id) {
+            updateGroupTabs(groupTabs, openAllGroup);
+            sendMessage(
+                'trigger-update',
+                { update: true },
+                { context: 'popup', tabId: currentTab.id },
+            );
+            return;
+        }
         updateGroupTabs(groupTabs, openAllGroup);
         return;
     }
     if (cmd === 'un-group') {
-        const currentTabs = await chrome.tabs.query({});
-        const unGroupIds = currentTabs
-            .filter((t) => t.groupId !== -1)
-            .map((t) => {
-                if (t.id) {
-                    return t.id;
-                }
-                return -1;
-            });
-        if (unGroupIds.length > 0) {
-            chrome.tabs.ungroup(unGroupIds);
+        await cancelGroups();
+        const currentTab = await getCurrentTab();
+        if (currentTab && currentTab.id) {
+            sendMessage(
+                'trigger-update',
+                { update: true },
+                { context: 'popup', tabId: currentTab.id },
+            );
+            return;
         }
+        sendMessage('trigger-update', { update: true }, 'popup');
     }
 };
 

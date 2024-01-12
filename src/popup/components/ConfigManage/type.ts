@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from 'react';
+
 export type TabType = 'all' | 'noGroup';
 
 export type DomainLevelType = 1 | 2 | 3;
@@ -30,4 +32,8 @@ export interface DomainConfigType {
     leastNumber: number;
     matchLevel: DomainLevelType;
     openAllGroup: boolean;
+}
+
+export interface ConfigManageProps {
+    callBack: Dispatch<SetStateAction<number>>;
 }
