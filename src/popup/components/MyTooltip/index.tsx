@@ -11,10 +11,10 @@ interface MyTooltipProps {
 export default function MyTooltip(props: MyTooltipProps) {
     const { title, style, placement } = props;
     return (
-        <Tooltip title={title} placement={placement}>
+        <Tooltip title={title} overlayInnerStyle={style} placement={placement}>
             <QuestionCircleOutlined
                 rev={undefined}
-                style={{ color: '#666666', paddingRight: '5px', ...style }}
+                style={{ color: '#666666', paddingRight: '5px' }}
             />
         </Tooltip>
     );

@@ -137,7 +137,7 @@ export function ConfigManage(props: ConfigManageProps) {
                     {showConfig ? (
                         <div className="rule-item-wrapper">
                             <div className="rule-item">
-                                <div className="label">默认匹配范围：</div>
+                                <div className="label">标签页生效范围：</div>
                                 <TabSelectRange
                                     value={domainConfig.selectedRange}
                                     onChange={(v) => onChangeConfigItem('selectedRange', v)}
