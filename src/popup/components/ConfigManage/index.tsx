@@ -1,5 +1,5 @@
 import { Button, InputNumber, message, Select, Switch } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { sendMessage } from 'webext-bridge';
 
 import { getUnGroupsIds } from '@/service';
@@ -76,24 +76,18 @@ function getInitData() {
 
 export function ConfigManage(props: ConfigManageProps) {
     const { callBack } = props;
-    const [domainConfig, setDomainConfig] = useState<DomainConfigType>(getInitData());
+    const [domainConfig, setDomainConfig] = useState<DomainConfigType>(initData);
     const onChangeConfigItem = async (
         keyType: ConfigKeyType,
         value: string | number | null | boolean,
     ) => {
         setDomainConfig({ ...domainConfig, [keyType]: value });
-        localStorage.setItem(
-            'domain_config',
-            JSON.stringify({ ...domainConfig, [keyType]: value }),
-        );
+        chrome.storage.local.set({ domain_config: { ...domainConfig, [keyType]: value } });
         await sendMessage('domain-config', { ...domainConfig, [keyType]: value }, 'background');
         callBack((v) => v + 1);
     };
-    const showConfig = localStorage.getItem('domain_config')
-        ? JSON.parse(localStorage.getItem('domain_config') as string).open
-        : false;
     const extraHandle = async () => {
-        if (showConfig) {
+        if (domainConfig.open) {
             await sendMessage('domain-config', { ...domainConfig }, 'background');
             callBack((v) => v + 1);
             return;
@@ -106,6 +100,13 @@ export function ConfigManage(props: ConfigManageProps) {
             message.error('没有需要取消分组的标签页');
         }
     };
+
+    useEffect(() => {
+        chrome.storage.local.get((res) => {
+            setDomainConfig(res.domain_config as DomainConfigType);
+        });
+    }, []);
+
     return (
         <div className="config-wrapper">
             <div className="rule">
@@ -134,7 +135,7 @@ export function ConfigManage(props: ConfigManageProps) {
                             </Button>
                         </div>
                     </div>
-                    {showConfig ? (
+                    {domainConfig.open ? (
                         <div className="rule-item-wrapper">
                             <div className="rule-item">
                                 <div className="label">标签页生效范围：</div>

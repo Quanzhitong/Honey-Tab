@@ -29,17 +29,19 @@ const shortcutCommand = async (cmd: string) => {
         mergeWinHandle();
     }
     if (cmd === 'create-group') {
-        const { open, selectedRange, leastNumber, matchLevel, openAllGroup } = domainConfigMsg;
-        await mergeGroups({ open, selectedRange, leastNumber, matchLevel, openAllGroup });
-        const currentTab = await getCurrentTab();
-        if (currentTab && currentTab.id) {
-            sendMessage(
-                'trigger-update',
-                { update: true },
-                { context: 'popup', tabId: currentTab.id },
-            );
-            return;
-        }
+        chrome.storage.local.get(async (res) => {
+            const { open, selectedRange, leastNumber, matchLevel, openAllGroup } =
+                res ?? domainConfigMsg;
+            await mergeGroups({ open, selectedRange, leastNumber, matchLevel, openAllGroup });
+            const currentTab = await getCurrentTab();
+            if (currentTab && currentTab.id) {
+                sendMessage(
+                    'trigger-update',
+                    { update: true },
+                    { context: 'popup', tabId: currentTab.id },
+                );
+            }
+        });
     }
     if (cmd === 'un-group') {
         const unGroupIds = await getUnGroupsIds({});
@@ -70,15 +72,11 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener((info) => {
-    console.log(info, '==info');
-
     if (info.menuItemId === 'helpBook') {
         chrome.runtime.openOptionsPage();
     }
 });
 
 chrome.runtime.onSuspend.addListener(() => {
-    // 在插件卸载时清除 localStorage 数据
-    console.log('Extension uninstalled. LocalStorage cleared.');
     chrome.storage.local.clear();
 });
