@@ -61,8 +61,24 @@ const shortcutCommand = async (cmd: string) => {
 
 chrome.commands.onCommand.addListener(shortcutCommand);
 
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.contextMenus.create({
+        id: 'helpBook',
+        title: '帮助文档',
+        contexts: ['all'],
+    });
+});
+
+chrome.contextMenus.onClicked.addListener((info) => {
+    console.log(info, '==info');
+
+    if (info.menuItemId === 'helpBook') {
+        chrome.runtime.openOptionsPage();
+    }
+});
+
 chrome.runtime.onSuspend.addListener(() => {
     // 在插件卸载时清除 localStorage 数据
     console.log('Extension uninstalled. LocalStorage cleared.');
-    localStorage.removeItem('domain_config');
+    chrome.storage.local.clear();
 });
