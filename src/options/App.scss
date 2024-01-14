@@ -1,10 +1,65 @@
 @import url('~@/styles/reset.scss');
 
-.app {
-    width: 100vw;
-    height: 100vh;
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 20px;
+}
 
-    .title {
-        text-align: center;
-    }
+.app {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.title {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.section-title {
+    color: #06c;
+    font-size: 20px;
+    margin-top: 20px;
+    border-bottom: 2px solid #06c;
+    padding-bottom: 5px;
+}
+
+.subsection-title {
+    color: #090;
+    font-size: 18px;
+    margin-top: 15px;
+}
+
+.subsubsection-title {
+    padding-left: 16px;
+    font-size: 16px;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.paragraph {
+    padding-left: 16px;
+    margin-top: 10px;
+}
+
+/* Add some spacing and styling for the configuration items */
+.subsection-title,
+.subsubsection-title,
+.paragraph {
+    margin-left: 10px;
+}
+
+/* Highlight the configuration items for better readability */
+.configuration-item {
+    background-color: #f4f4f4;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.contact {
+    display: flex;
+    justify-content: space-around;
 }

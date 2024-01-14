@@ -2,6 +2,8 @@ import { Button, InputNumber, message, Select, Switch } from 'antd';
 import { useState } from 'react';
 import { sendMessage } from 'webext-bridge';
 
+import { getUnGroupsIds } from '@/service';
+
 import type {
     ConfigKeyType,
     ConfigManageProps,
@@ -96,15 +98,7 @@ export function ConfigManage(props: ConfigManageProps) {
             callBack((v) => v + 1);
             return;
         }
-        const currentTabs = await chrome.tabs.query({ currentWindow: true });
-        const unGroupIds = currentTabs
-            .filter((t) => t.groupId !== -1)
-            .map((t) => {
-                if (t.id) {
-                    return t.id;
-                }
-                return -1;
-            });
+        const unGroupIds = await getUnGroupsIds({ currentWindow: true });
         if (unGroupIds.length > 0) {
             await chrome.tabs.ungroup(unGroupIds);
             callBack((v) => v + 1);

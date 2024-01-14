@@ -7,14 +7,16 @@ import './style.scss';
 
 const TabTitle = (props: TabTitleProps) => {
     const { title, tabId, callBack } = props;
-    const handleClick = async () => {
+    const [showDelete, setShowDelete] = useState(false);
+    const tabTitleRef = useRef<HTMLDivElement | null>(null);
+
+    const handleDelete = async () => {
         if (tabId) {
             await chrome.tabs.remove(tabId);
         }
         callBack((v) => v + 1);
     };
-    const [showDelete, setShowDelete] = useState(false);
-    const tabTitleRef = useRef<HTMLDivElement | null>(null);
+
     useEffect(() => {
         const handleMouseEnter = () => {
             setShowDelete(true);
@@ -50,7 +52,7 @@ const TabTitle = (props: TabTitleProps) => {
                         style={{
                             color: '#4784ff',
                         }}
-                        onClick={handleClick}
+                        onClick={handleDelete}
                     />
                 ) : null}
             </span>

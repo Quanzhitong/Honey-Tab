@@ -2,6 +2,8 @@ import { Button, Tabs, Tree } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { onMessage } from 'webext-bridge';
 
+import { mergeWinHandle } from '@/service';
+
 import { ConfigManage } from './components/ConfigManage';
 import GroupTitle from './components/GroupTitle';
 import MyTooltip from './components/MyTooltip';
@@ -22,30 +24,6 @@ const initData = {
         },
     ],
 };
-
-async function moveTabs(w: chrome.windows.Window[], targetWin: chrome.windows.Window) {
-    const numWindows = w.length;
-    const tabs = await chrome.tabs.query({ currentWindow: true });
-    let tabPosition = tabs.length;
-    for (let i = 0; i < numWindows; i++) {
-        const win = w[i];
-        if (targetWin.id !== win.id) {
-            const numTabs = win.tabs?.length || 0;
-            for (let j = 0; j < numTabs; j++) {
-                const tab = win.tabs && win.tabs[j];
-                if (tab && tab.id) {
-                    chrome.tabs.move(tab.id, { windowId: targetWin.id, index: tabPosition });
-                    tabPosition++;
-                }
-            }
-        }
-    }
-}
-
-async function mergeWinHandle() {
-    const targetWin = await chrome.windows.getCurrent();
-    chrome.windows.getAll({ populate: true }, (win) => moveTabs(win, targetWin));
-}
 
 const fetchCurrentTabs = async () => {
     const currentTabs = await chrome.tabs.query({ currentWindow: true });
