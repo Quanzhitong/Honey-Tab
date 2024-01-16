@@ -9,18 +9,25 @@ console.info(`当前HMR_URL 为 ${decodeURIComponent(HMR_URL)} `);
 const HMRClientScript = `webpack-hot-middleware/client?path=${HMR_URL}&reload=true&overlay=true`;
 
 const backgroundPath = resolveSrc('background/index.ts');
-const optionsPath = resolveSrc('options/index.tsx');
+// options 先隐藏
+// const optionsPath = resolveSrc('options/index.tsx');
 const popupPath = resolveSrc('popup/index.tsx');
+const helpPath = resolveSrc('help/index.tsx');
+const introducePath = resolveSrc('introduce/index.tsx');
 
 const devEntry: Record<string, string[]> = {
     background: [backgroundPath],
-    options: [HMRClientScript, optionsPath],
+    // options: [HMRClientScript, optionsPath],
     popup: [HMRClientScript, popupPath],
+    help: [HMRClientScript, helpPath],
+    introduce: [HMRClientScript, introducePath],
 };
 const prodEntry: Record<string, string[]> = {
     background: [backgroundPath],
-    options: [optionsPath],
+    // options: [optionsPath],
     popup: [popupPath],
+    help: [helpPath],
+    introduce: [introducePath],
 };
 const entry = __DEV__ ? devEntry : prodEntry;
 

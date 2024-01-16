@@ -6,7 +6,6 @@ import { mergeWinHandle } from '@/service';
 
 import { ConfigManage } from './components/ConfigManage';
 import GroupTitle from './components/GroupTitle';
-import MyTooltip from './components/MyTooltip';
 import TabTitle from './components/TabTitle';
 import type { TabDataType, TabListType } from './type';
 
@@ -34,23 +33,11 @@ const fetchCurrentTabs = async () => {
     return currentTabs;
 };
 
-const MergeWindowBtn = () => {
-    return (
-        <>
-            <MyTooltip
-                title={
-                    <>
-                        快捷键: <br />
-                        Command/Ctrl + Shift + 键盘右键
-                    </>
-                }
-            />
-            <Button id={'mm'} type="primary" size="small" onClick={mergeWinHandle}>
-                一键合并窗口
-            </Button>
-        </>
-    );
-};
+const MergeWindowBtn = () => (
+    <Button id={'mm'} type="primary" size="small" onClick={mergeWinHandle}>
+        一键合并窗口
+    </Button>
+);
 
 const App = () => {
     const [tabList, setTabList] = useState<TabListType[]>([initData]);
@@ -98,15 +85,7 @@ const App = () => {
         return [
             {
                 key: 'tab列表',
-                label: (
-                    <span className="tab-title">
-                        tab列表{' '}
-                        <MyTooltip
-                            placement="bottomLeft"
-                            title={'插件打开时会自动整理tab标签页顺序，未分组的排在最右边'}
-                        />
-                    </span>
-                ),
+                label: '标签页列表',
                 children: (
                     <Tree
                         className="draggable-tree"
