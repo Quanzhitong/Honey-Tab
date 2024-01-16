@@ -6,7 +6,7 @@ import './App.scss'; // 引入外部 CSS 文件
 const App = () => (
     <div className="app">
         <div className="title">Honey Tab 首次使用说明</div>
-        <div className="section">基础功能：</div>
+        <div className="section">功能：</div>
         <div className="feature">1、列表展示所有标签，支持拖动，删除。</div>
         <div className="feature">2、分组规则：</div>
         <div className="sub-feature">2.1 支持设定分组标签页的最低数量</div>

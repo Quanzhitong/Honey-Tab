@@ -82,13 +82,13 @@ const commonConfig: Configuration = {
         new HtmlWebpackPlugin({
             chunks: ['help'],
             filename: 'help.html',
-            title: 'help page',
+            title: '帮助文档',
             template: resolvePublic('help.html'),
         }),
         new HtmlWebpackPlugin({
             chunks: ['introduce'],
             filename: 'introduce.html',
-            title: 'introduce page',
+            title: '首次使用文档',
             template: resolvePublic('introduce.html'),
         }),
         new MiniCssExtractPlugin({
