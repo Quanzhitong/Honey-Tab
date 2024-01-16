@@ -66,14 +66,6 @@ const initData: DomainConfigType = {
     openAllGroup: false,
 };
 
-function getInitData() {
-    const data = localStorage.getItem('domain_config');
-    if (data) {
-        return JSON.parse(data) as DomainConfigType;
-    }
-    return initData;
-}
-
 export function ConfigManage(props: ConfigManageProps) {
     const { callBack } = props;
     const [domainConfig, setDomainConfig] = useState<DomainConfigType>(initData);
@@ -103,7 +95,11 @@ export function ConfigManage(props: ConfigManageProps) {
 
     useEffect(() => {
         chrome.storage.local.get((res) => {
-            setDomainConfig(res.domain_config as DomainConfigType);
+            if (res.domain_config) {
+                setDomainConfig(res.domain_config as DomainConfigType);
+                return;
+            }
+            setDomainConfig(initData);
         });
     }, []);
 
