@@ -1,0 +1,64 @@
+/* App.css */
+
+.app {
+    padding: 30px;
+    background-color: #f7f1e3;
+    border: 2px solid #e44d26;
+    border-radius: 10px;
+    width: 400px;
+    color: #1e272e;
+    box-shadow: 0 8px 16px rgba(0 0 0 / 10%);
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #e44d26;
+}
+
+.section {
+    font-size: 1.5em;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.feature {
+    margin-left: 20px;
+    margin-bottom: 8px;
+}
+
+.sub-feature {
+    margin-left: 40px;
+    margin-bottom: 8px;
+}
+
+.img-step1 {
+    padding-left: 50px;
+}
+
+.img-step2 {
+    padding-bottom: 12px;
+}
+
+.usage {
+    margin-top: 20px;
+}
+
+.help {
+    margin-top: 20px;
+    font-style: italic;
+    color: #888;
+}
+
+.tips {
+    margin-left: 20px;
+    margin-bottom: 8px;
+}
+
+.sub-tips {
+    margin-left: 40px;
+    margin-bottom: 8px;
+}

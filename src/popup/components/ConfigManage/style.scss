@@ -1,0 +1,50 @@
+.rule-content {
+    padding: 8px 0;
+}
+
+.enable-rule {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+    justify-content: space-between;
+
+    .switch {
+        margin-right: 8px;
+        margin-bottom: 2px;
+    }
+
+    .extra-btn {
+        float: right;
+
+        .warning-btn {
+            background-color: #ff5e00;
+        }
+    }
+}
+
+.rule-item-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    .rule-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-bottom: 8px;
+
+        .label {
+            width: 170px;
+            text-align: right;
+        }
+
+        .item {
+            flex: 1;
+        }
+    }
+}
+
+.label-col {
+    text-align: right;
+}

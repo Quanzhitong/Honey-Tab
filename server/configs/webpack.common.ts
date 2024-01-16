@@ -79,6 +79,18 @@ const commonConfig: Configuration = {
             title: 'popup page',
             template: resolvePublic('popup.html'),
         }),
+        new HtmlWebpackPlugin({
+            chunks: ['help'],
+            filename: 'help.html',
+            title: 'help page',
+            template: resolvePublic('help.html'),
+        }),
+        new HtmlWebpackPlugin({
+            chunks: ['introduce'],
+            filename: 'introduce.html',
+            title: 'introduce page',
+            template: resolvePublic('introduce.html'),
+        }),
         new MiniCssExtractPlugin({
             filename: `css/[name].css`,
             ignoreOrder: false,
@@ -158,6 +170,8 @@ const commonConfig: Configuration = {
 };
 
 if (ENABLE_DEVTOOLS) {
+    // 当使用诸如 copy-webpack-plugin 之类的插件时，您可能会将资源输出到构建目录，而 html-webpack-plugin 无法检测/输出这些资源
+    // 该插件可以手动解决此类问题
     commonConfig.plugins!.push(
         new HtmlWebpackTagsPlugin({
             tags: ['js/react-devtools.js'],
