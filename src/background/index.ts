@@ -1,7 +1,7 @@
 import { onMessage, sendMessage } from 'webext-bridge';
 
 import type { DomainConfigType } from '@/popup/components/ConfigManage/type';
-import { getUnGroupsIds, mergeGroups, mergeWinHandle } from '@/service';
+import { getBadge, getUnGroupsIds, mergeGroups, mergeWinHandle } from '@/service';
 
 let domainConfigMsg: DomainConfigType = {
     open: false,
@@ -31,7 +31,7 @@ const shortcutCommand = async (cmd: string) => {
     if (cmd === 'create-group') {
         chrome.storage.local.get(async (res) => {
             const { open, selectedRange, leastNumber, matchLevel, openAllGroup } =
-                res ?? domainConfigMsg;
+                res?.domain_config ?? domainConfigMsg;
             await mergeGroups({ open, selectedRange, leastNumber, matchLevel, openAllGroup });
             const currentTab = await getCurrentTab();
             if (currentTab && currentTab.id) {
@@ -63,20 +63,36 @@ const shortcutCommand = async (cmd: string) => {
 
 chrome.commands.onCommand.addListener(shortcutCommand);
 
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener(async (details) => {
     chrome.contextMenus.create({
         id: 'helpBook',
         title: '帮助文档',
         contexts: ['all'],
     });
+    chrome.storage.local.get(async (res) => {
+        const { open } = res.domain_config ?? domainConfigMsg;
+        await getBadge(open);
+    });
+    if (details.reason === 'install') {
+        chrome.tabs.create({
+            url: 'introduce.html',
+            active: true,
+        });
+    }
 });
 
 chrome.contextMenus.onClicked.addListener((info) => {
     if (info.menuItemId === 'helpBook') {
-        chrome.runtime.openOptionsPage();
+        chrome.tabs.create({
+            url: 'help.html',
+            active: true,
+        });
     }
 });
 
-chrome.runtime.onSuspend.addListener(() => {
-    chrome.storage.local.clear();
+chrome.storage.local.onChanged.addListener((changes) => {
+    if (changes.domain_config && changes.domain_config.newValue) {
+        const newDomainConfig = changes.domain_config.newValue;
+        getBadge(newDomainConfig.open);
+    }
 });

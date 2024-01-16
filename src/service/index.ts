@@ -145,3 +145,13 @@ export async function mergeGroups({
     }
     updateGroupTabs(groupTabs, openAllGroup);
 }
+
+export async function getBadge(open: boolean) {
+    if (open) {
+        await chrome.action.setBadgeText({ text: 'Y' });
+        await chrome.action.setBadgeBackgroundColor({ color: '#1C73E8' });
+        return;
+    }
+    await chrome.action.setBadgeText({ text: 'N' });
+    await chrome.action.setBadgeBackgroundColor({ color: '#BFBFBF' });
+}
