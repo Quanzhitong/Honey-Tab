@@ -1,11 +1,11 @@
 {
-    "name": "hades-tool",
-    "displayName": "Hades Tool",
+    "name": "honey-tab",
+    "displayName": "Honey Tab",
     "version": "1.0.0",
     "browserslist": "Chrome >= 96",
-    "description": "一个管理窗口、tab 标签页的小工具",
+    "description": "一个帮你管理众多浏览器窗口、标签页的小工具",
     "private": true,
-    "author": "YuTengjing",
+    "author": "qzt",
     "license": "MIT",
     "homepage": "https://github.com/tjx666/awesome-chrome-extension-boilerplate#readme",
     "repository": {
