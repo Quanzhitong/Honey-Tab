@@ -1,17 +1,18 @@
 import step1 from '@/imgs/step1.png';
 import step2 from '@/imgs/step2.png';
 
-import './App.scss'; // 引入外部 CSS 文件
+import './App.scss';
 
 const App = () => (
     <div className="app">
         <div className="title">Honey Tab 首次使用说明</div>
         <div className="section">功能：</div>
-        <div className="feature">1、列表展示所有标签，支持拖动，删除。</div>
-        <div className="feature">2、分组规则：</div>
+        <div className="feature">1、列表展示所有标签页，支持拖动、删除。</div>
+        <div className="feature">2、标签页分组规则：</div>
         <div className="sub-feature">2.1 支持设定分组标签页的最低数量</div>
         <div className="sub-feature">2.2 支持按域名分组等级分组</div>
         <div className="sub-feature">2.3 支持设置是否展开全部分组</div>
+        <div className="feature">3、支持多个chrome浏览器窗口一键合并</div>
         <div className="section">Tips：</div>
         <div className="tips">1、首次使用可按下面步骤，将插件“钉”在插件栏</div>
         <div className="sub-tips">1.1 点击 chrome 标签栏的“扩展程序”</div>
