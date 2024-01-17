@@ -24,8 +24,9 @@ const App = () => (
         </div>
         <div className="tips">2、在插件上右击，可查看帮助文档</div>
         <div className="tips">
-            2、在配置管理中，设置好配置之后，日常使用只需三个快捷键，即可轻松管理纷繁复杂的 tab 标签
+            3、在配置管理中，设置好配置之后，日常使用只需三个快捷键，即可轻松管理纷繁复杂的 tab 标签
         </div>
+        <div className="tips">4、在浏览器的分组上可以右击更改颜色和标题</div>
     </div>
 );
 

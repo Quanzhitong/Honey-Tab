@@ -109,8 +109,9 @@ export function updateGroupTabs(
     openAllGroup: boolean,
 ) {
     groupTabs.forEach((item) => {
-        const windowId = Number(Object.keys(item)[0]);
-        const tabsWithDomain = item[Object.keys(item)[0]] as [string, tabsDataType[]][];
+        const currentDomain = Object.keys(item)[0];
+        const windowId = Number(currentDomain);
+        const tabsWithDomain = item[currentDomain] as [string, tabsDataType[]][];
         tabsWithDomain.forEach(([domain, tabsInfo]) => {
             const tabIds = tabsInfo.map((t) => t.tabId) as number[];
             chrome.tabs.group({ createProperties: { windowId }, tabIds }, (groupId) => {
