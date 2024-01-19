@@ -1,3 +1,8 @@
+.merge-rule {
+    font-size: 16px;
+    font-weight: bold;
+}
+
 .rule-content {
     padding: 8px 0;
 }
@@ -13,6 +18,11 @@
     .switch {
         margin-right: 8px;
         margin-bottom: 2px;
+    }
+
+    .domain-rule {
+        font-size: 14px;
+        font-weight: 500;
     }
 
     .extra-btn {
