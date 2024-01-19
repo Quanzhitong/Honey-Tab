@@ -2,8 +2,9 @@ import { Button, InputNumber, message, Select, Switch } from 'antd';
 import { useEffect, useState } from 'react';
 import { sendMessage } from 'webext-bridge';
 
-import { getUnGroupsIds } from '@/service';
+import { getGroupsIds } from '@/service';
 
+import GroupNamesTable from '../GroupNamesTable';
 import type {
     ConfigKeyType,
     ConfigManageProps,
@@ -64,6 +65,8 @@ const initData: DomainConfigType = {
     leastNumber: 2,
     matchLevel: 3,
     openAllGroup: false,
+    showCustomGroupName: false,
+    groupNames: {},
 };
 
 export function ConfigManage(props: ConfigManageProps) {
@@ -71,11 +74,12 @@ export function ConfigManage(props: ConfigManageProps) {
     const [domainConfig, setDomainConfig] = useState<DomainConfigType>(initData);
     const onChangeConfigItem = async (
         keyType: ConfigKeyType,
-        value: string | number | null | boolean,
+        value: string | number | null | boolean | Record<string, string>,
     ) => {
-        setDomainConfig({ ...domainConfig, [keyType]: value });
-        chrome.storage.local.set({ domain_config: { ...domainConfig, [keyType]: value } });
-        await sendMessage('domain-config', { ...domainConfig, [keyType]: value }, 'background');
+        const storeState = { ...domainConfig, [keyType]: value };
+        setDomainConfig(storeState);
+        chrome.storage.local.set({ domain_config: storeState });
+        await sendMessage('domain-config', storeState, 'background');
         callBack((v) => v + 1);
     };
     const extraHandle = async () => {
@@ -84,7 +88,7 @@ export function ConfigManage(props: ConfigManageProps) {
             callBack((v) => v + 1);
             return;
         }
-        const unGroupIds = await getUnGroupsIds({ currentWindow: true });
+        const unGroupIds = await getGroupsIds({ currentWindow: true });
         if (unGroupIds.length > 0) {
             await chrome.tabs.ungroup(unGroupIds);
             callBack((v) => v + 1);
@@ -106,7 +110,7 @@ export function ConfigManage(props: ConfigManageProps) {
     return (
         <div className="config-wrapper">
             <div className="rule">
-                <h4>合并规则：</h4>
+                <div className="merge-rule">标签页管理规则：</div>
                 <div className="rule-content">
                     <div className="enable-rule">
                         <div>
@@ -118,7 +122,7 @@ export function ConfigManage(props: ConfigManageProps) {
                                 onChange={(checked) => onChangeConfigItem('open', checked)}
                                 className="switch"
                             />{' '}
-                            <span>域名匹配</span>
+                            <span className="domain-rule">域名匹配</span>
                         </div>
                         <div className="extra-btn">
                             <Button
@@ -167,6 +171,25 @@ export function ConfigManage(props: ConfigManageProps) {
                                     className="switch"
                                 />
                             </div>
+                            <div className="rule-item">
+                                <div className="label">是否自定义分组名：</div>
+                                <Switch
+                                    size="small"
+                                    checkedChildren="是"
+                                    unCheckedChildren="否"
+                                    checked={domainConfig.showCustomGroupName}
+                                    onChange={(checked) =>
+                                        onChangeConfigItem('showCustomGroupName', checked)
+                                    }
+                                    className="switch"
+                                />
+                            </div>
+                            {domainConfig.showCustomGroupName ? (
+                                <GroupNamesTable
+                                    groupNames={domainConfig.groupNames}
+                                    handleSave={(v) => onChangeConfigItem('groupNames', v)}
+                                />
+                            ) : null}
                         </div>
                     ) : null}
                 </div>

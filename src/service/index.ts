@@ -1,4 +1,5 @@
 import type { tabsDataType } from '@/background/type';
+import type { DomainConfigType } from '@/popup/components/ConfigManage/type';
 import { extractDomain, groupBy } from '@/utils';
 
 export async function moveTabs(w: chrome.windows.Window[], targetWin: chrome.windows.Window) {
@@ -25,7 +26,7 @@ export async function mergeWinHandle() {
     chrome.windows.getAll({ populate: true }, (win) => moveTabs(win, targetWin));
 }
 
-export async function getUnGroupsIds(queryInfo: object) {
+export async function getGroupsIds(queryInfo: object) {
     const currentTabs = await chrome.tabs.query(queryInfo);
     return currentTabs
         .filter((t) => t.groupId !== -1)
@@ -107,6 +108,8 @@ export function updateGroupTabs(
         [x: string]: [unknown, tabsDataType[]][];
     }[],
     openAllGroup: boolean,
+    showCustomGroupName: boolean,
+    groupNames: Record<string, string>,
 ) {
     groupTabs.forEach((item) => {
         const currentDomain = Object.keys(item)[0];
@@ -115,7 +118,10 @@ export function updateGroupTabs(
         tabsWithDomain.forEach(([domain, tabsInfo]) => {
             const tabIds = tabsInfo.map((t) => t.tabId) as number[];
             chrome.tabs.group({ createProperties: { windowId }, tabIds }, (groupId) => {
-                chrome.tabGroups.update(groupId, { title: domain, collapsed: !openAllGroup });
+                chrome.tabGroups.update(groupId, {
+                    title: showCustomGroupName ? groupNames[domain] ?? domain : domain,
+                    collapsed: !openAllGroup,
+                });
             });
         });
     });
@@ -127,24 +133,21 @@ export async function mergeGroups({
     matchLevel,
     leastNumber,
     openAllGroup,
-}: {
-    open: boolean;
-    selectedRange: string;
-    matchLevel: number;
-    leastNumber: number;
-    openAllGroup: boolean;
-}) {
+    showCustomGroupName,
+    groupNames,
+}: DomainConfigType) {
     if (!open) {
         return;
     }
     const groupTabs = await createGroupTabs(selectedRange, matchLevel, leastNumber);
+    // 可能有用户自行创建的分组，不满足配置条件，所以执行一键整理前，要解散下分组，重新整理
     if (selectedRange === 'all') {
-        const unGroupIds = await getUnGroupsIds({});
-        if (unGroupIds.length > 0) {
-            chrome.tabs.ungroup(unGroupIds);
+        const groupIds = await getGroupsIds({});
+        if (groupIds.length > 0) {
+            chrome.tabs.ungroup(groupIds);
         }
     }
-    updateGroupTabs(groupTabs, openAllGroup);
+    updateGroupTabs(groupTabs, openAllGroup, showCustomGroupName, groupNames);
 }
 
 export async function getBadge(open: boolean) {
