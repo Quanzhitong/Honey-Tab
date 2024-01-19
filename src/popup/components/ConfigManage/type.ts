@@ -24,7 +24,9 @@ export type ConfigKeyType =
     | 'leastNumber'
     | 'matchLevel'
     | 'open'
-    | 'openAllGroup';
+    | 'openAllGroup'
+    | 'showCustomGroupName'
+    | 'groupNames';
 
 export interface DomainConfigType {
     open: boolean; // 是否开启分组
@@ -32,6 +34,8 @@ export interface DomainConfigType {
     leastNumber: number;
     matchLevel: DomainLevelType;
     openAllGroup: boolean;
+    showCustomGroupName: boolean;
+    groupNames: Record<string, string>;
 }
 
 export interface ConfigManageProps {
