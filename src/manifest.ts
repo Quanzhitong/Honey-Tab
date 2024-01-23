@@ -9,7 +9,7 @@ const manifest: Manifest.WebExtensionManifest = {
     description: pkg.description,
     manifest_version: 3,
     minimum_chrome_version: pkg.browserslist.split(' ')[2],
-    permissions: ['tabs', 'tabGroups', 'contextMenus', 'storage'],
+    permissions: ['tabs', 'tabGroups', 'contextMenus', 'storage', 'videoCapture'],
     content_security_policy: {
         extension_pages: "script-src 'self' http://localhost; object-src 'self';",
     },
@@ -22,6 +22,18 @@ const manifest: Manifest.WebExtensionManifest = {
     background: {
         service_worker: 'js/background.js',
     },
+    content_scripts: [
+        {
+            matches: ['https://github.com/*'],
+            css: ['css/all.css'],
+            js: ['js/all.js', ...(__DEV__ ? [] : ['js/all.js'])],
+        },
+        {
+            matches: ['*://www.baidu.com/track*'],
+            css: ['css/track.css'],
+            js: ['js/track.js'],
+        },
+    ],
     action: {
         default_popup: 'popup.html',
         default_icon: {
@@ -65,5 +77,12 @@ const manifest: Manifest.WebExtensionManifest = {
         },
     },
 };
+
+if (!__DEV__) {
+    manifest.content_scripts?.unshift({
+        matches: ['<all_urls>'],
+        js: ['js/vendor.js'],
+    });
+}
 
 export default manifest;

@@ -112,6 +112,35 @@ const App = () => (
         <div className="section-title">四、快捷键</div>
         <Shortcut />
         <div className="section-title">五、FAQ</div>
+        <div className="subsection-title">
+            1、使用键盘快捷键确实比鼠标方便了许多，能不能连键盘都不用？
+        </div>
+        <div className="answer">
+            <span className="first-line">
+                能提出这种要求，不得不说是真的懒，不过你可以尝试访问下{' '}
+                <a href="http://www.baidu.com/track">www.baidu.com/track</a>，
+            </span>
+            <span>
+                这个页面是不存在的，会请求摄像头权限，允许一下，然后打开控制台（右击空白页面处，点选检查），如果有幸看到
+                `start-track`字样，
+            </span>
+            <span>
+                在你的摄像头前2、30 厘米处 “攥拳” 或者 “张开手掌“，就可以隔空操作你的标签页了
+            </span>
+        </div>
+        <div className="tip">温馨提示：</div>
+        <div className="tip">
+            1、此功能持续使用摄像头计算画面每一帧以捕捉手势，实现人机交互，比较耗内存，请慎用！
+        </div>
+        <div className="tip">
+            2、安全关闭需要两步：首先用快捷键解散下分组，然后关闭当前www.baidu.com/track页面
+        </div>
+        <div className="tip">
+            3、如果意外关闭导致进程没有终止，可查看活动监视器中的(Google Chrome Helper(plugin)),
+            手动终止
+        </div>
+
+        <div className="section-title">六、其他</div>
         <div className="contact">
             <div className="subsection-title">使用问题或其他需求请联系微信</div>
             <div className="subsection-title">
