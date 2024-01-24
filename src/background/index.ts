@@ -1,7 +1,7 @@
 import { onMessage, sendMessage } from 'webext-bridge';
 
 import type { DomainConfigType } from '@/popup/components/ConfigManage/type';
-import { getBadge, getUnGroupsIds, mergeGroups, mergeWinHandle } from '@/service';
+import { getBadge, getGroupsIds, mergeGroups, mergeWinHandle } from '@/service';
 
 let domainConfigMsg: DomainConfigType = {
     open: false,
@@ -9,6 +9,8 @@ let domainConfigMsg: DomainConfigType = {
     leastNumber: 2,
     matchLevel: 3,
     openAllGroup: false,
+    showCustomGroupName: false,
+    groupNames: {},
 };
 
 async function getCurrentTab() {
@@ -20,8 +22,7 @@ onMessage('domain-config', async (msg) => {
     const { data } = msg ?? {};
     const objData = JSON.parse(JSON.stringify(data));
     domainConfigMsg = objData;
-    const { open, selectedRange, leastNumber, matchLevel, openAllGroup } = objData;
-    await mergeGroups({ open, selectedRange, leastNumber, matchLevel, openAllGroup });
+    await mergeGroups(objData);
 });
 
 const shortcutCommand = async (cmd: string) => {
@@ -30,9 +31,7 @@ const shortcutCommand = async (cmd: string) => {
     }
     if (cmd === 'create-group') {
         chrome.storage.local.get(async (res) => {
-            const { open, selectedRange, leastNumber, matchLevel, openAllGroup } =
-                res?.domain_config ?? domainConfigMsg;
-            await mergeGroups({ open, selectedRange, leastNumber, matchLevel, openAllGroup });
+            await mergeGroups(res?.domain_config ?? domainConfigMsg);
             const currentTab = await getCurrentTab();
             if (currentTab && currentTab.id) {
                 sendMessage(
@@ -44,9 +43,9 @@ const shortcutCommand = async (cmd: string) => {
         });
     }
     if (cmd === 'un-group') {
-        const unGroupIds = await getUnGroupsIds({});
-        if (unGroupIds.length > 0) {
-            await chrome.tabs.ungroup(unGroupIds);
+        const groupIds = await getGroupsIds({});
+        if (groupIds.length > 0) {
+            await chrome.tabs.ungroup(groupIds);
         }
         const currentTab = await getCurrentTab();
         if (currentTab && currentTab.id) {
