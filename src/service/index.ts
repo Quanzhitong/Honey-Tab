@@ -46,7 +46,7 @@ export function groupTabsByDomainLevel(tabsData: tabsDataType[], level: number) 
         }
         const groupByMatchLevel = groupBy(tabs, (t) => {
             if (!t.domain) {
-                return 'domain';
+                return 'noDomain';
             }
             const domainElements: string[] = [];
             const domainSplit = t.domain.split('.');
