@@ -67,10 +67,10 @@ const App = () => (
 
         <div className="section-title">一、标签页列表</div>
         <div className="subsection-title">
-            1.1、插件打开时会自动整理 tab 标签页顺序，未分组的排在最后边
+            1.1 插件打开时会自动整理 tab 标签页顺序，未分组的排在最后边
         </div>
         <div className="subsection-title">
-            1.2、新建分组是浏览器默认支持功能（右击标签页，选择’向群组中添加标签页‘）
+            1.2 新建分组是浏览器默认支持功能（右击标签页，选择’向群组中添加标签页‘）
         </div>
         <div className="section-title">二、配置管理</div>
 
@@ -98,13 +98,15 @@ const App = () => (
         <div className="subsection-title">2.5 是否展开全部分组：</div>
         <div className="paragraph">是指当用户打开插件时，是否展开所有分组。</div>
 
-        <div className="subsection-title">2.6 最多展开的分组个数</div>
+        <div className="subsection-title">2.6 最多展开的分组个数：</div>
         <div className="subsubsection-title">
             2.6.1 是指当用户打开插件时，同时最多展开的分组个数。
         </div>
         <div className="subsubsection-title">
-            2.6.2、设置保持展开的分组个数，初次设置时，会从左到右，按设置数展开。
+            2.6.2 设置保持展开的分组个数，初次设置时，会从左到右，按设置数展开。
         </div>
+        <div className="subsection-title">2.7 自定义分组名：</div>
+        <div className="paragraph">可给常用域名配好自定义分组名，注意是精确匹配</div>
         <div className="section-title">三、一键合并窗口</div>
         <div className="subsection-title">
             当打开多个 chrome 浏览器窗口，可通过此功能一键合并其他所有窗口到当前窗口

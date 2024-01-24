@@ -10,9 +10,10 @@ const App = () => (
         <div className="feature">1、列表展示所有标签页，支持拖动、删除。</div>
         <div className="feature">2、标签页可配置分组规则：</div>
         <div className="sub-feature">2.1 支持设置标签页生效范围</div>
-        <div className="sub-feature"> 2.2 支持设定分组标签页的最低数量</div>
+        <div className="sub-feature">2.2 支持设定分组标签页的最低数量</div>
         <div className="sub-feature">2.3 支持设定域名匹配等级</div>
         <div className="sub-feature">2.4 支持设置是否展开全部分组</div>
+        <div className="sub-feature">2.5 支持自定义分组名</div>
         <div className="feature">3、支持多个chrome浏览器窗口一键合并</div>
         <div className="section">Tips：</div>
         <div className="tips">1、首次使用可按下面步骤，将插件“钉”在插件栏</div>
