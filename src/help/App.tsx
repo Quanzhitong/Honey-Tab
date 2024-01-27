@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 
-import Qr from '@/imgs/qr.png';
+import QrMain from '@/imgs/qr_main.png';
 import MyTooltip from '@/popup/components/MyTooltip';
 
 import './App.scss';
@@ -120,7 +120,7 @@ const App = () => (
                 或者邮箱 <a href="mailto:emqzt111@163.com">emqzt111@163.com</a>
             </div>
         </div>
-        <img src={Qr} alt="" width={150} style={{ paddingLeft: 150 }} />
+        <img src={QrMain} alt="" width={150} style={{ paddingLeft: 150 }} />
     </div>
 );
 
