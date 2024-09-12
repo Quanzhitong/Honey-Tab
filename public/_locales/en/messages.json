@@ -1,0 +1,102 @@
+{
+    "tab1": {
+        "message": "Tab List",
+        "description": "Title of the tab list"
+    },
+    "tab2": {
+        "message": "Config Manage",
+        "description": "Title of the configuration management"
+    },
+    "extra": {
+        "message": "Merge Windows",
+        "description": "Button text for merging windows in one click"
+    },
+    "tabList_empty": {
+        "message": "No Groups",
+        "description": "Prompt when there are no groups"
+    },
+    "configManage_title": {
+        "message": "Tab Management Rules",
+        "description": "Title of the tab management rules"
+    },
+    "configManage_rule1": {
+        "message": "Domain Matching",
+        "description": "Rule for domain matching"
+    },
+    "configManage_open_btn_text": {
+        "message": "Open",
+        "description": "Text for the open button"
+    },
+    "configManage_close_btn_text": {
+        "message": "Close",
+        "description": "Close for the open button"
+    },
+    "configManage_extra_btn": {
+        "message": "Organize Groups in One Click",
+        "description": "Button text for organizing groups in one click"
+    },
+    "configManage_title_tab_range": {
+        "message": "Tab Scope",
+        "description": "Title of the tab scope"
+    },
+    "configManage_title_tab_min_num": {
+        "message": "Min Num of Tabs in Group",
+        "description": "Minimum number of tabs required for grouping"
+    },
+    "configManage_title_domain_level": {
+        "message": "Domain Matching Level",
+        "description": "Title of the domain matching level"
+    },
+    "configManage_title_is_all_open": {
+        "message": "Expand All Groups",
+        "description": "Option to expand all groups"
+    },
+    "configManage_title_is_custom_groupName": {
+        "message": "Customize Group Names",
+        "description": "Option to customize group names"
+    },
+    "configManage_value_tab_range_all_tabs": {
+        "message": "Use Domain Matching for All Tabs",
+        "description": "Option to apply domain matching to all tabs"
+    },
+    "configManage_value_tab_range_only_noGroup_tabs": {
+        "message": "Use Domain Matching Only for Ungrouped Tabs",
+        "description": "Option to apply domain matching only to ungrouped tabs"
+    },
+    "configManage_value_domain_level_all": {
+        "message": "Full Domain",
+        "description": "Option for full domain matching"
+    },
+    "configManage_value_domain_level_two": {
+        "message": "Second Level",
+        "description": "Option for first-level domain matching"
+    },
+    "configManage_value_domain_level_three": {
+        "message": "Third Level",
+        "description": "Option for second-level domain matching"
+    },
+    "configManage_value_btn_yes": {
+        "message": "Yes",
+        "description": "Text for the yes button"
+    },
+    "configManage_value_btn_no": {
+        "message": "No",
+        "description": "Text for the no button"
+    },
+    "configManage_extra_btn_prefix": {
+        "message": "",
+        "description": ""
+    },
+    "configManage_extra_btn_organize": {
+        "message": "Organize",
+        "description": "organize"
+    },
+    "configManage_extra_btn_dissolve": {
+        "message": "Dissolve",
+        "description": "Dissolve"
+    },
+    "configManage_extra_btn_suffix": {
+        "message": "Group",
+        "description": "Group"
+    }
+}
