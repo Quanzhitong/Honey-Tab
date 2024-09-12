@@ -25,28 +25,9 @@ onMessage('domain-config', async (msg) => {
     await mergeGroups(objData);
 });
 
-const shortcutCommand = async (cmd: string) => {
-    if (cmd === 'merge-windows') {
-        mergeWinHandle();
-    }
-    if (cmd === 'create-group') {
-        chrome.storage.local.get(async (res) => {
-            await mergeGroups(res?.domain_config ?? domainConfigMsg);
-            const currentTab = await getCurrentTab();
-            if (currentTab && currentTab.id) {
-                sendMessage(
-                    'trigger-update',
-                    { update: true },
-                    { context: 'popup', tabId: currentTab.id },
-                );
-            }
-        });
-    }
-    if (cmd === 'un-group') {
-        const groupIds = await getGroupsIds({});
-        if (groupIds.length > 0) {
-            await chrome.tabs.ungroup(groupIds);
-        }
+function mergeGroup() {
+    return chrome.storage.local.get(async (res) => {
+        await mergeGroups(res?.domain_config ?? domainConfigMsg);
         const currentTab = await getCurrentTab();
         if (currentTab && currentTab.id) {
             sendMessage(
@@ -54,9 +35,58 @@ const shortcutCommand = async (cmd: string) => {
                 { update: true },
                 { context: 'popup', tabId: currentTab.id },
             );
-            return;
         }
-        sendMessage('trigger-update', { update: true }, 'popup');
+    });
+}
+
+async function unGroup() {
+    const groupIds = await getGroupsIds({});
+    if (groupIds.length > 0) {
+        await chrome.tabs.ungroup(groupIds);
+    }
+    const currentTab = await getCurrentTab();
+    if (currentTab && currentTab.id) {
+        sendMessage('trigger-update', { update: true }, { context: 'popup', tabId: currentTab.id });
+        return;
+    }
+    sendMessage('trigger-update', { update: true }, 'popup');
+}
+
+onMessage('track', async (res) => {
+    const { data } = JSON.parse(JSON.stringify(res));
+    if (data.label) {
+        if (data.label === 'open') {
+            unGroup();
+        }
+        if (data.label === 'closed') {
+            chrome.storage.local.get(async (res) => {
+                await mergeGroups(res?.domain_config ?? domainConfigMsg);
+                const currentTab = await getCurrentTab();
+                if (currentTab && currentTab.id) {
+                    sendMessage(
+                        'trigger-update',
+                        { update: true },
+                        { context: 'popup', tabId: currentTab.id },
+                    );
+                }
+            });
+        }
+    }
+});
+
+const shortcutCommand = async (cmd: string) => {
+    if (cmd === 'merge-windows') {
+        mergeWinHandle();
+    }
+    if (cmd === 'create-group') {
+        mergeGroup();
+    }
+    if (cmd === 'un-group') {
+        unGroup();
+        const currentTab = await getCurrentTab();
+        if (currentTab && currentTab.id) {
+            sendMessage('stop-track', false, { context: 'content-script', tabId: currentTab.id });
+        }
     }
 };
 
@@ -72,6 +102,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         const { open } = res.domain_config ?? domainConfigMsg;
         await getBadge(open);
     });
+
     if (details.reason === 'install') {
         chrome.tabs.create({
             url: 'introduce.html',

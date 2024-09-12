@@ -1,0 +1,102 @@
+{
+    "tab1": {
+        "message": "标签页列表",
+        "description": "标签页列表的标题"
+    },
+    "tab2": {
+        "message": "配置管理",
+        "description": "配置管理的标题"
+    },
+    "extra": {
+        "message": "一键合并窗口",
+        "description": "用于合并窗口的按钮文本"
+    },
+    "tabList_empty": {
+        "message": "无分组",
+        "description": "当没有分组时的提示"
+    },
+    "configManage_title": {
+        "message": "标签页管理规则",
+        "description": "标签页管理规则的标题"
+    },
+    "configManage_rule1": {
+        "message": "域名匹配",
+        "description": "域名匹配的规则"
+    },
+    "configManage_open_btn_text": {
+        "message": "开启",
+        "description": "打开按钮的文本"
+    },
+    "configManage_close_btn_text": {
+        "message": "关闭",
+        "description": "关闭按钮的文本"
+    },
+    "configManage_extra_btn": {
+        "message": "一键整理分组",
+        "description": "一键整理分组的按钮文本"
+    },
+    "configManage_title_tab_range": {
+        "message": "标签页生效范围",
+        "description": "标签页生效范围的标题"
+    },
+    "configManage_title_tab_min_num": {
+        "message": "分组标签页的最低数量",
+        "description": "分组标签页需要的最低数量"
+    },
+    "configManage_title_domain_level": {
+        "message": "域名匹配等级",
+        "description": "域名匹配等级的标题"
+    },
+    "configManage_title_is_all_open": {
+        "message": "是否展开全部分组",
+        "description": "是否展开全部分组的选项"
+    },
+    "configManage_title_is_custom_groupName": {
+        "message": "是否自定义分组名",
+        "description": "自定义分组名的选项"
+    },
+    "configManage_value_tab_range_all_tabs": {
+        "message": "对所有标签页使用域名匹配",
+        "description": "选择对所有标签页应用域名匹配的选项"
+    },
+    "configManage_value_tab_range_only_noGroup_tabs": {
+        "message": "仅对未加入分组的标签页使用域名匹配",
+        "description": "选择仅对未分组标签页应用域名匹配的选项"
+    },
+    "configManage_value_domain_level_all": {
+        "message": "完整域名",
+        "description": "选择完整域名匹配的选项"
+    },
+    "configManage_value_domain_level_two": {
+        "message": "二级",
+        "description": "一级域名匹配的选项"
+    },
+    "configManage_value_domain_level_three": {
+        "message": "三级",
+        "description": "二级域名匹配的选项"
+    },
+    "configManage_value_btn_yes": {
+        "message": "是",
+        "description": "是的按钮文本"
+    },
+    "configManage_value_btn_no": {
+        "message": "否",
+        "description": "否的按钮文本"
+    },
+    "configManage_extra_btn_prefix": {
+        "message": "一键",
+        "description": "整理分组前缀"
+    },
+    "configManage_extra_btn_organize": {
+        "message": "整理",
+        "description": "整理"
+    },
+    "configManage_extra_btn_dissolve": {
+        "message": "解散",
+        "description": "解散"
+    },
+    "configManage_extra_btn_suffix": {
+        "message": "分组",
+        "description": "整理分组后缀"
+    }
+}

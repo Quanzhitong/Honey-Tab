@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { sendMessage } from 'webext-bridge';
 
 import { getGroupsIds } from '@/service';
+import { getMessage } from '@/utils';
 
 import GroupNamesTable from '../GroupNamesTable';
 import type {
@@ -20,26 +21,26 @@ import './style.scss';
 
 const tabSelectOptions: { label: string; value: TabType }[] = [
     {
-        label: '对所有标签页使用域名匹配',
+        label: getMessage('configManage_value_tab_range_all_tabs'),
         value: 'all',
     },
     {
-        label: '仅对未加入分组的标签页使用域名匹配',
+        label: getMessage('configManage_value_tab_range_only_noGroup_tabs'),
         value: 'noGroup',
     },
 ];
 
 const domainLevelOptions: { label: string; value: DomainLevelType }[] = [
     {
-        label: '完整域名',
+        label: getMessage('configManage_value_domain_level_all'),
         value: 1,
     },
     {
-        label: '二级',
+        label: getMessage('configManage_value_domain_level_two'),
         value: 2,
     },
     {
-        label: '三级',
+        label: getMessage('configManage_value_domain_level_three'),
         value: 3,
     },
 ];
@@ -110,19 +111,19 @@ export function ConfigManage(props: ConfigManageProps) {
     return (
         <div className="config-wrapper">
             <div className="rule">
-                <div className="merge-rule">标签页管理规则：</div>
+                <div className="merge-rule">{getMessage('configManage_title')}：</div>
                 <div className="rule-content">
                     <div className="enable-rule">
                         <div>
                             <Switch
                                 size="small"
-                                checkedChildren="开启"
-                                unCheckedChildren="关闭"
+                                checkedChildren={getMessage('configManage_open_btn_text')}
+                                unCheckedChildren={getMessage('configManage_close_btn_text')}
                                 checked={domainConfig.open}
                                 onChange={(checked) => onChangeConfigItem('open', checked)}
                                 className="switch"
                             />{' '}
-                            <span className="domain-rule">域名匹配</span>
+                            <span className="domain-rule">{getMessage('configManage_rule1')}</span>
                         </div>
                         <div className="extra-btn">
                             <Button
@@ -131,39 +132,51 @@ export function ConfigManage(props: ConfigManageProps) {
                                 size="small"
                                 onClick={extraHandle}
                             >
-                                一键{domainConfig.open ? '整理' : '解散'}分组
+                                {getMessage('configManage_extra_btn_prefix')}
+                                {domainConfig.open
+                                    ? getMessage('configManage_extra_btn_organize')
+                                    : getMessage('configManage_extra_btn_dissolve')}
+                                {getMessage('configManage_extra_btn_suffix')}
                             </Button>
                         </div>
                     </div>
                     {domainConfig.open ? (
                         <div className="rule-item-wrapper">
                             <div className="rule-item">
-                                <div className="label">标签页生效范围：</div>
+                                <div className="label">
+                                    {getMessage('configManage_title_tab_range')}：
+                                </div>
                                 <TabSelectRange
                                     value={domainConfig.selectedRange}
                                     onChange={(v) => onChangeConfigItem('selectedRange', v)}
                                 />
                             </div>
                             <div className="rule-item">
-                                <div className="label">分组标签页的最低数量：</div>
+                                <div className="label">
+                                    {getMessage('configManage_title_tab_min_num')}：
+                                </div>
                                 <TabLeastNumber
                                     value={domainConfig.leastNumber}
                                     onChange={(v) => onChangeConfigItem('leastNumber', v)}
                                 />
                             </div>
                             <div className="rule-item">
-                                <div className="label">域名匹配等级：</div>
+                                <div className="label">
+                                    {getMessage('configManage_title_domain_level')}：
+                                </div>
                                 <TabMatchLevel
                                     value={domainConfig.matchLevel}
                                     onChange={(v) => onChangeConfigItem('matchLevel', v)}
                                 />
                             </div>
                             <div className="rule-item">
-                                <div className="label">是否展开全部分组：</div>
+                                <div className="label">
+                                    {getMessage('configManage_title_is_all_open')}：
+                                </div>
                                 <Switch
                                     size="small"
-                                    checkedChildren="是"
-                                    unCheckedChildren="否"
+                                    checkedChildren={getMessage('configManage_value_btn_yes')}
+                                    unCheckedChildren={getMessage('configManage_value_btn_no')}
                                     checked={domainConfig.openAllGroup}
                                     onChange={(checked) =>
                                         onChangeConfigItem('openAllGroup', checked)
@@ -172,11 +185,13 @@ export function ConfigManage(props: ConfigManageProps) {
                                 />
                             </div>
                             <div className="rule-item">
-                                <div className="label">是否自定义分组名：</div>
+                                <div className="label">
+                                    {getMessage('configManage_title_is_custom_groupName')}：
+                                </div>
                                 <Switch
                                     size="small"
-                                    checkedChildren="是"
-                                    unCheckedChildren="否"
+                                    checkedChildren={getMessage('configManage_value_btn_yes')}
+                                    unCheckedChildren={getMessage('configManage_value_btn_no')}
                                     checked={domainConfig.showCustomGroupName}
                                     onChange={(checked) =>
                                         onChangeConfigItem('showCustomGroupName', checked)

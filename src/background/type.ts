@@ -5,3 +5,5 @@ export interface tabsDataType {
     tabId?: number;
     windowId?: number;
 }
+
+export type TrackLabelType = 'open' | 'closed' | 'pinch' | 'point' | 'pointtip' | 'pinchtip';

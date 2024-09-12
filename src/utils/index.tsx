@@ -48,3 +48,5 @@ export function orderBy<T>(
         throw new Error('Unsupported type for sorting.');
     });
 }
+
+export const getMessage: any = chrome.i18n.getMessage;

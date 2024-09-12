@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { onMessage } from 'webext-bridge';
 
 import { mergeWinHandle } from '@/service';
+import { getMessage } from '@/utils';
 
 import { ConfigManage } from './components/ConfigManage';
 import GroupTitle from './components/GroupTitle';
@@ -24,6 +25,12 @@ const initData = {
     ],
 };
 
+const MergeWindowBtn = () => (
+    <Button id={'mm'} type="primary" size="small" onClick={mergeWinHandle}>
+        {getMessage('extra')}
+    </Button>
+);
+
 const fetchCurrentTabs = async () => {
     const currentTabs = await chrome.tabs.query({ currentWindow: true });
     const unGroupTabs = currentTabs.filter((tab) => tab.groupId === -1);
@@ -33,15 +40,10 @@ const fetchCurrentTabs = async () => {
     return currentTabs;
 };
 
-const MergeWindowBtn = () => (
-    <Button id={'mm'} type="primary" size="small" onClick={mergeWinHandle}>
-        一键合并窗口
-    </Button>
-);
-
 const App = () => {
     const [tabList, setTabList] = useState<TabListType[]>([initData]);
     const [version, setVersion] = useState(0);
+
     const onDropHandle = async (info: any) => {
         const dragNode = info.dragNode;
         if (dragNode.children && dragNode.children.length > 0) {
@@ -85,7 +87,7 @@ const App = () => {
         return [
             {
                 key: 'tab列表',
-                label: '标签页列表',
+                label: getMessage('tab1'),
                 children: (
                     <Tree
                         className="draggable-tree"
@@ -102,7 +104,7 @@ const App = () => {
             },
             {
                 key: '配置管理',
-                label: <span className="tab-title">配置管理</span>,
+                label: <span className="tab-title">{getMessage('tab2')}</span>,
                 children: <ConfigManage callBack={setVersion} />,
             },
         ];
@@ -152,7 +154,7 @@ const App = () => {
         const relativeIds = new Set(currentGroups.map((x) => x.id));
         const restTabList = currentTabs.filter((t) => !relativeIds.has(t.groupId));
         const emptyGroup = {
-            title: '无分组',
+            title: getMessage('tabList_empty'),
             collapsed: false,
             color: 'grey' as chrome.tabGroups.ColorEnum,
             id: EMPTY_GROUP_ID,
