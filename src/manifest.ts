@@ -13,6 +13,7 @@ const manifest: Manifest.WebExtensionManifest = {
     content_security_policy: {
         extension_pages: "script-src 'self' http://localhost; object-src 'self';",
     },
+    default_locale: 'zh_CN',
     web_accessible_resources: [
         {
             matches: ['<all_urls>'],
