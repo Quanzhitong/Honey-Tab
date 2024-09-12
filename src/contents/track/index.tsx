@@ -36,6 +36,7 @@ const stopTracking = () => {
         videoTracks.forEach((track) => {
             track.stop();
         });
+        video.srcObject = null;
     }
 };
 
